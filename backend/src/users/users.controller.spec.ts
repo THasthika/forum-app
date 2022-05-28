@@ -12,22 +12,18 @@ describe('UsersController', () => {
         ...dto,
       };
     }),
-
     updateUser: jest.fn((id, dto) => {
       return {
         id,
         ...dto,
       };
     }),
-
-    getAllUsers: jest.fn(() => []),
-
-    getUserById: jest.fn((id) => ({
+    findAllUsers: jest.fn(() => []),
+    findUserById: jest.fn((id) => ({
       id,
       email: 'test@test.com',
       username: 'admin',
     })),
-
     deleteUser: jest.fn((id) => ({
       id,
       email: 'test@test.com',
@@ -75,11 +71,11 @@ describe('UsersController', () => {
   });
 
   it('should find all users', () => {
-    expect(controller.getAllUsers()).toEqual([]);
+    expect(controller.findAllUsers()).toEqual([]);
   });
 
   it('should get user by id', () => {
-    expect(controller.getUserById(1)).toHaveProperty('id', 1);
+    expect(controller.findUserById(1)).toHaveProperty('id', 1);
   });
 
   it('should delete user by id', () => {

@@ -61,11 +61,11 @@ describe('UsersService', () => {
   });
 
   it('should find all users', async () => {
-    expect(await service.getAllUsers()).toEqual([]);
+    expect(await service.findAllUsers()).toEqual([]);
   });
 
   it('should get user by id', async () => {
-    expect(await service.getUserById(1)).toHaveProperty('id', 1);
+    expect(await service.findUserById(1)).toHaveProperty('id', 1);
   });
 
   it('should delete user by id', async () => {

@@ -17,13 +17,13 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  getAllUsers() {
-    return this.usersService.getAllUsers();
+  findAllUsers() {
+    return this.usersService.findAllUsers();
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: number) {
-    return this.usersService.getUserById(id);
+  findUserById(@Param('id') id: number) {
+    return this.usersService.findUserById(id);
   }
 
   @Post()

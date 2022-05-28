@@ -22,11 +22,11 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  getAllUsers(): Promise<User[]> {
+  findAllUsers(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  getUserById(id: number) {
+  findUserById(id: number) {
     try {
       return this.userRepository.findOneOrFail(id);
     } catch (err) {
@@ -35,6 +35,12 @@ export class UsersService {
       }
       throw err;
     }
+  }
+
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    return await this.userRepository.findOne({
+      where: { email },
+    });
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
