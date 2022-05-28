@@ -75,7 +75,7 @@ export class AuthService {
     }
   }
 
-  @Cron('* */15 * * * *')
+  @Cron('0 */15 * * * *')
   async handleExpiredRefreshTokens() {
     this.logger.log('Removing expired refresh tokens...');
 
