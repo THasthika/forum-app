@@ -1,5 +1,12 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from 'src/roles/role.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
@@ -11,7 +18,22 @@ export class User {
 
   @Column({ unique: true })
   username: string;
+
   @Column()
   @Exclude()
   password: string;
+
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: {
+      name: 'users',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'roles',
+      referencedColumnName: 'name',
+    },
+  })
+  roles: Role[];
 }

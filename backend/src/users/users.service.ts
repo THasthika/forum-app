@@ -2,9 +2,11 @@ import {
   HttpException,
   Injectable,
   InternalServerErrorException,
+  Logger,
+  OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityNotFoundError, Repository } from 'typeorm';
+import { EntityNotFoundError, FindOneOptions, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 
@@ -15,20 +17,59 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserNotFoundException } from './exceptions/user-not-found.exception';
 import { EmailAlreadyExistsException } from './exceptions/email-already-exists.exception';
 import { UsernameAlreadyExistsException } from './exceptions/username-already-exists.exception';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
+  private logger = new Logger(UsersService.name);
+
   constructor(
+    private rolesService: RolesService,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+
+  async onModuleInit() {
+    setTimeout(async () => {
+      await this.initAdminUser();
+    }, 500);
+    // await this.initAdminUser();
+  }
+
+  private async initAdminUser() {
+    // create admin user if not found
+    let adminUser = await this.userRepository.findOne(
+      { username: 'admin' },
+      { relations: ['roles'] },
+    );
+    if (!adminUser) {
+      this.logger.log('Creating admin user...');
+      adminUser = await this.createUser({
+        email: 'admin@test.com',
+        password: 'admin@1234',
+        username: 'admin',
+      });
+    }
+    if (!adminUser.roles) {
+      adminUser.roles = [];
+    }
+    if (adminUser.roles.length === 0) {
+      this.logger.log('Adding ADMIN role to admin user...');
+      const adminRole = await this.rolesService.findRoleByName('ADMIN');
+      if (!adminRole) {
+        return;
+      }
+      adminUser.roles.push(adminRole);
+      this.userRepository.save(adminUser);
+    }
+  }
 
   findAllUsers(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  findUserById(id: number) {
+  findUserById(id: number, options: FindOneOptions<User> = {}) {
     try {
-      return this.userRepository.findOneOrFail(id);
+      return this.userRepository.findOneOrFail(id, options);
     } catch (err) {
       if (err instanceof EntityNotFoundError) {
         throw new UserNotFoundException();

@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { RolesService } from 'src/roles/roles.service';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -19,6 +20,8 @@ describe('UsersService', () => {
     remove: jest.fn().mockImplementation((user) => user),
   };
 
+  const mockRolesService = {};
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -26,6 +29,10 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: mockUsersRepository,
+        },
+        {
+          provide: RolesService,
+          useValue: mockRolesService,
         },
       ],
     }).compile();
