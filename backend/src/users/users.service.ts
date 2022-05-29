@@ -17,7 +17,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserNotFoundException } from './exceptions/user-not-found.exception';
 import { EmailAlreadyExistsException } from './exceptions/email-already-exists.exception';
 import { UsernameAlreadyExistsException } from './exceptions/username-already-exists.exception';
-import { RolesService } from 'src/roles/roles.service';
+import { RolesService } from '../roles/roles.service';
 
 @Injectable()
 export class UsersService implements OnModuleInit {

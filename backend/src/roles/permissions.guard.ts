@@ -15,7 +15,6 @@ export class PermissionsGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-    console.log(user);
     return requiredPermissions.every((perm) =>
       user.permissions?.includes(perm),
     );

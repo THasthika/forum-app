@@ -1,5 +1,5 @@
-import { User } from 'src/users/user.entity';
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import { User } from '../users/user.entity';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { Permission } from './permission.entity';
 
 @Entity({ name: 'roles' })

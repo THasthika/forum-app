@@ -1,5 +1,4 @@
-import { Controller, Get, Request, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { Controller, Get, Request } from '@nestjs/common';
 import { PermissionEnum } from './roles/permission.enum';
 import { RequirePermissions } from './roles/require-permissions.decorator';
 
@@ -8,7 +7,7 @@ export class AppController {
   // constructor() {}
 
   @Get('protected')
-  @RequirePermissions(PermissionEnum.POST_APPROVE)
+  @RequirePermissions(PermissionEnum.POST_APPROVE, PermissionEnum.POST_CREATE)
   getHello(@Request() req) {
     return req.user;
   }
