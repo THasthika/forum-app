@@ -1,7 +1,10 @@
-export const setUserData = (dispatch, { token, name, email }) => {
+export const setUserData = (
+  dispatch,
+  { accessToken, refreshToken, username, email },
+) => {
   dispatch({
     type: 'SET_USER_DATA',
-    payload: { token, name, email },
+    payload: { accessToken, refreshToken, username, email },
   });
 };
 

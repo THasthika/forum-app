@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useReducer } from 'react';
+import { getUser, setUser } from 'utils/localStorage';
 import { userReducer } from './reducer';
 
 const { createContext } = require('react');
 
 const initialState = null;
 
-const initializer = localStorage.getItem('user')
-  ? JSON.parse(localStorage.getItem('user'))
-  : initialState;
+const initializer = getUser() || initialState;
 
 const UserContext = createContext(null);
 
@@ -17,7 +16,7 @@ export const UserProvider = ({ children }) => {
   const [user, dispatch] = useReducer(userReducer, initializer);
 
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(user));
+    setUser(user);
   }, [user]);
 
   return (

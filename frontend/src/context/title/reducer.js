@@ -8,12 +8,12 @@ export const titleReducer = (state, { type, payload }) => {
     case 'SET_DOCUMENT_TITLE':
       return {
         ...state,
-        documentTitle: `${payload} - ECommerceSite`,
+        documentTitle: `${payload} - Forum`,
       };
     case 'SET_BOTH':
       return {
         ...state,
-        documentTitle: `${payload.documentTitle} - ECommerceSite`,
+        documentTitle: `${payload.documentTitle} - Forum`,
         pageTitle: payload.pageTitle,
       };
     default:

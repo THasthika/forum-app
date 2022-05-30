@@ -8,6 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import FormTextField from 'components/forms/FormTextField';
+import api from 'api';
+import { useSnackbar } from 'notistack';
 
 const registerFormSchema = yup
   .object({
@@ -39,6 +41,8 @@ const RegisterPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const defaultValues = {
     username: '',
     email: '',
@@ -62,7 +66,21 @@ const RegisterPage = () => {
     });
   }, [titleDispatch]);
 
-  const onSubmit = useCallback(() => {}, []);
+  const onSubmit = useCallback(
+    async (data) => {
+      setIsLoading(true);
+      const { email, password, username } = data;
+      try {
+        await api.users.createUser(email, username, password);
+        enqueueSnackbar('User successfully created', { variant: 'success' });
+      } catch (err) {
+        enqueueSnackbar(err.message, { variant: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [enqueueSnackbar],
+  );
 
   return (
     <Box
@@ -92,7 +110,7 @@ const RegisterPage = () => {
               name="email"
               type="email"
               placeholder="Email"
-              error={errors.email}
+              error={!!errors.email}
               helperText={errors.email?.message}
               fullWidth
             />
@@ -102,7 +120,7 @@ const RegisterPage = () => {
               control={control}
               name="username"
               placeholder="Username"
-              error={errors.username}
+              error={!!errors.username}
               helperText={errors.username?.message}
               fullWidth
               autoFocus
@@ -114,7 +132,7 @@ const RegisterPage = () => {
               name="password"
               type="password"
               placeholder="Password"
-              error={errors.password}
+              error={!!errors.password}
               helperText={errors.password?.message}
               fullWidth
             />
@@ -125,7 +143,7 @@ const RegisterPage = () => {
               name="passwordConfirm"
               type="password"
               placeholder="Password Confirmation"
-              error={errors.passwordConfirm}
+              error={!!errors.passwordConfirm}
               helperText={errors.passwordConfirm?.message}
               fullWidth
             />

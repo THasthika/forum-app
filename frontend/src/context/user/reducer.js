@@ -3,8 +3,9 @@ export const userReducer = (state, { type, payload }) => {
     case 'SET_USER_DATA':
       return {
         ...state,
-        token: payload.token,
-        name: payload.name,
+        refreshToken: payload.refreshToken,
+        accessToken: payload.accessToken,
+        username: payload.username,
         email: payload.email,
       };
     case 'USER_LOGOUT':
