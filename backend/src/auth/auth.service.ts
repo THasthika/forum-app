@@ -35,6 +35,9 @@ export class AuthService {
     if (!(await this.comparePassword(password, user.password))) {
       return null;
     }
+    if (!user.isVerified) {
+      return null;
+    }
     return user;
   }
 
@@ -47,6 +50,8 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload),
       refreshToken: refreshToken,
+      email: user.email,
+      username: user.username,
     };
   }
 

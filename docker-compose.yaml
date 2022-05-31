@@ -1,0 +1,32 @@
+version: "3"
+services:
+  db:
+    image: postgres:14.3
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: forumpwd
+      POSTGRES_USER: forumuser
+      POSTGRES_DB: forum
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+  backend:
+    build: ./backend/
+    ports:
+      - 8001:3000
+    depends_on:
+      - db
+    volumes:
+      - ./backend/:/app
+      - /app/node_modules/
+    command: npm run start:dev
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile.prod
+    ports:
+      - 8000:3000
+    depends_on:
+      - backend
+volumes:
+  dbdata:

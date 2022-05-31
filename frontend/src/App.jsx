@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import { UserProvider } from 'context/user';
+import { UserProvider, useUser } from 'context/user';
 import { Route, Routes } from 'react-router-dom';
 import HomePage from 'pages/HomePage';
 import { ThemeProvider } from 'context/theme';
@@ -9,14 +9,22 @@ import { Button, CssBaseline } from '@mui/material';
 import { TitleProvider } from 'context/title';
 import Layout from 'Layout';
 import RegisterPage from 'pages/RegisterPage';
+import LoginPage from 'pages/LoginPage';
 
 function RoutesHolder() {
-  // const user = useUser();
+  const { user } = useUser();
 
   return (
     <Routes>
       <Route path="/" element={<HomePage />}></Route>
-      <Route path="/register" element={<RegisterPage />}></Route>
+      {!!user ? (
+        <></>
+      ) : (
+        <>
+          <Route path="/register" element={<RegisterPage />}></Route>
+          <Route path="/login" element={<LoginPage />}></Route>
+        </>
+      )}
     </Routes>
   );
 }
@@ -27,6 +35,7 @@ function App() {
     if (!notistackRef.current) {
       return;
     }
+    // @ts-ignore
     notistackRef.current.closeSnackbar(key);
   };
 
@@ -39,11 +48,7 @@ function App() {
           preventDuplicate
           ref={notistackRef}
           action={(key) => (
-            <Button
-              size="small"
-              variant="inherit"
-              onClick={onClickDismiss(key)}
-            >
+            <Button size="small" color="inherit" onClick={onClickDismiss(key)}>
               Dismiss
             </Button>
           )}

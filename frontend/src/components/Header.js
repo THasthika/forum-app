@@ -48,7 +48,7 @@ const Header = () => {
           {!!user ? (
             <>
               <Button component={Link} to="/profile" color="inherit">
-                {user.name}
+                {user.username}
               </Button>
               <Button onClick={handleLogout} color="inherit">
                 Logout

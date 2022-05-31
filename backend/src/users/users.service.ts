@@ -18,6 +18,7 @@ import { UserNotFoundException } from './exceptions/user-not-found.exception';
 import { EmailAlreadyExistsException } from './exceptions/email-already-exists.exception';
 import { UsernameAlreadyExistsException } from './exceptions/username-already-exists.exception';
 import { RolesService } from '../roles/roles.service';
+import { RoleNotFoundException } from './exceptions/role-not-found.exception';
 
 @Injectable()
 export class UsersService implements OnModuleInit {
@@ -27,6 +28,11 @@ export class UsersService implements OnModuleInit {
     private rolesService: RolesService,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+
+  private async hashPassword(password: string) {
+    const salt = await bcrypt.genSalt(HASH_SALT_ROUNDS);
+    return await bcrypt.hash(password, salt);
+  }
 
   async onModuleInit() {
     setTimeout(async () => {
@@ -48,6 +54,7 @@ export class UsersService implements OnModuleInit {
         password: 'admin@1234',
         username: 'admin',
       });
+      adminUser.isVerified = true;
     }
     if (!adminUser.roles) {
       adminUser.roles = [];
@@ -88,6 +95,7 @@ export class UsersService implements OnModuleInit {
     const user = new User();
     user.email = createUserDto.email;
     user.username = createUserDto.username;
+    user.isVerified = true;
     user.password = await this.hashPassword(createUserDto.password);
     try {
       // check if email already exists in the system
@@ -148,8 +156,50 @@ export class UsersService implements OnModuleInit {
     }
   }
 
-  private async hashPassword(password: string) {
-    const salt = await bcrypt.genSalt(HASH_SALT_ROUNDS);
-    return await bcrypt.hash(password, salt);
+  async addRole(id: number, roleName: string) {
+    const role = await this.rolesService.findRoleByName(roleName);
+    if (!role) {
+      throw new RoleNotFoundException();
+    }
+
+    let user = await this.userRepository.findOne(id, {
+      relations: ['roles'],
+    });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    if (user.roles.some((v) => v.name === role.name)) {
+      return user;
+    }
+
+    user.roles.push(role);
+    user = await this.userRepository.save(user);
+
+    return user;
+  }
+
+  async removeRole(id: number, roleName: string) {
+    const role = await this.rolesService.findRoleByName(roleName);
+    if (!role) {
+      throw new RoleNotFoundException();
+    }
+
+    let user = await this.userRepository.findOne(id, {
+      relations: ['roles'],
+    });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    if (!user.roles.some((v) => v.name === role.name)) {
+      return user;
+    }
+
+    const newRoles = user.roles.filter((v) => v.name !== role.name);
+    user.roles = newRoles;
+    user = await this.userRepository.save(user);
+
+    return user;
   }
 }

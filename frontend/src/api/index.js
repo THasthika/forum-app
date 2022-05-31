@@ -41,21 +41,19 @@ _api.interceptors.response.use(
     if (error.response.status === 401 && !originalConfig._retry) {
       try {
         const user = getUser();
-        if (!user)
-          throw new Error(
-            'user details could not be fetched from local storage',
-          );
-        const rs = await api.auth.refreshToken(user.refreshToken);
-        const { accessToken, refreshToken } = rs.data;
-        user.accessToken = accessToken;
-        user.refreshToken = refreshToken;
-        setUser(user);
+        if (user) {
+          const rs = await api.auth.refreshToken(user.refreshToken);
+          const { accessToken, refreshToken } = rs.data;
+          user.accessToken = accessToken;
+          user.refreshToken = refreshToken;
+          setUser(user);
 
-        _api.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${refreshToken}`;
+          _api.defaults.headers.common[
+            'Authorization'
+          ] = `Bearer ${refreshToken}`;
 
-        return _api(originalConfig);
+          return _api(originalConfig);
+        }
       } catch (_error) {
         if (_error.response && _error.response.data) {
           throw _error.response.data;

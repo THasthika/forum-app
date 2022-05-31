@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import { Role } from '../roles/role.entity';
 import {
   Column,
@@ -23,6 +23,12 @@ export class User {
   @Exclude()
   password: string;
 
+  @Column({ default: false })
+  isBanned: boolean;
+
+  @Column({ default: false })
+  isVerified: boolean;
+
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({
     name: 'user_roles',
@@ -35,5 +41,8 @@ export class User {
       referencedColumnName: 'name',
     },
   })
+  @Transform(({ value }) =>
+    value.map((v: Role) => ({ name: v.name, displayName: v.displayName })),
+  )
   roles: Role[];
 }

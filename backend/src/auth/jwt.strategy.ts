@@ -22,6 +22,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       return null;
     }
+    if (!user.isVerified) {
+      return null;
+    }
     const permissions = new Set<string>();
     user.roles.forEach((role) => {
       role.permissions.forEach((perm) => {
