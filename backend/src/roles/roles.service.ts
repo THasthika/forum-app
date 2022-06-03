@@ -10,7 +10,8 @@ export class RolesService implements OnModuleInit {
   private logger = new Logger(RolesService.name);
 
   constructor(
-    @InjectRepository(RoleEntity) private roleRepository: Repository<RoleEntity>,
+    @InjectRepository(RoleEntity)
+    private roleRepository: Repository<RoleEntity>,
     @InjectRepository(Permission)
     private permissionRepository: Repository<Permission>,
   ) {}
@@ -59,6 +60,7 @@ export class RolesService implements OnModuleInit {
       Object.values(PermissionEnum).map((v) => v.toString()),
     );
     this.createRoleWithPermissions('USER', 'User', [
+      PermissionEnum.USER_READ,
       PermissionEnum.POST_CREATE,
       PermissionEnum.POST_READ,
       PermissionEnum.COMMENT_CREATE,

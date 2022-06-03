@@ -11,10 +11,17 @@ export enum PermissionEnum {
   POST_CREATE = 'POST_CREATE',
   POST_UPDATE = 'POST_UPDATE',
   POST_DELETE = 'POST_DELETE',
-  POST_APPROVE = 'POST_APPROVE',
+  POST_STATUS_UPDATE = 'POST_STATUS_UPDATE',
 
   COMMENT_READ = 'COMMENT_READ',
   COMMENT_CREATE = 'COMMENT_CREATE',
   COMMENT_UPDATE = 'COMMENT_UPDATE',
   COMMENT_DELETE = 'COMMENT_DELETE',
+}
+
+export function hasPermission(
+  permissionList: any[],
+  ...perms: PermissionEnum[]
+) {
+  return perms.every((perm) => permissionList?.includes(perm));
 }

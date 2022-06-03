@@ -52,6 +52,7 @@ export class AuthService {
       refreshToken: refreshToken,
       email: user.email,
       username: user.username,
+      id: user.id,
     };
   }
 

@@ -2,11 +2,13 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -14,12 +16,13 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
+import { PermissionDeniedExcpetion } from 'src/exceptions/permission-denied.exception';
 import {
   ApiPaginatedResponse,
   PaginateQueryOptions,
 } from '../paginated-query.decorators';
 import { Public } from '../public.decorator';
-import { PermissionEnum } from '../roles/permission.enum';
+import { hasPermission, PermissionEnum } from '../roles/permission.enum';
 import { RequirePermissions } from '../roles/require-permissions.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -70,13 +73,21 @@ export class UsersController {
     description: 'Updates a given user.',
   })
   updateUser(
+    @Req() req,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
+    if (
+      req.user.id !== id &&
+      !hasPermission(req.user.id, PermissionEnum.USER_UPDATE)
+    ) {
+      throw new PermissionDeniedExcpetion();
+    }
     return this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
+  @RequirePermissions(PermissionEnum.USER_DELETE)
   @ApiOkResponse({
     type: UserEntity,
     description: 'Remove a user.',

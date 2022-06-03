@@ -34,7 +34,7 @@ export class PostEntity {
   @Column({ type: 'enum', enum: PostStatus, default: PostStatus.PENDING })
   status: PostStatus;
 
-  @Column()
+  @Column({ nullable: true })
   checkerId: string;
 
   @ApiProperty()

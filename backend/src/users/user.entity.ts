@@ -11,8 +11,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { PostEntity } from 'src/posts/post.entity';
-import { CommentEntity } from 'src/posts/comment.entity';
+import { PostEntity } from '../posts/post.entity';
+import { CommentEntity } from '../posts/comment.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
