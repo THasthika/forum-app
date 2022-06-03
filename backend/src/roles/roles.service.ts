@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PermissionEnum } from './permission.enum';
 import { Repository } from 'typeorm';
 import { Permission } from './permission.entity';
-import { Role } from './role.entity';
+import { RoleEntity } from './role.entity';
 
 @Injectable()
 export class RolesService implements OnModuleInit {
   private logger = new Logger(RolesService.name);
 
   constructor(
-    @InjectRepository(Role) private roleRepository: Repository<Role>,
+    @InjectRepository(RoleEntity) private roleRepository: Repository<RoleEntity>,
     @InjectRepository(Permission)
     private permissionRepository: Repository<Permission>,
   ) {}

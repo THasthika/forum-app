@@ -1,19 +1,32 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
-import { Role } from '../roles/role.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserEntity } from '../users/user.entity';
 
 @Entity({ name: 'posts' })
-export class Post {
+export class PostEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty()
+  @Column()
+  title: string;
+
+  @ApiProperty()
+  @Column({ type: 'text' })
+  content: string;
+
+  @ApiProperty()
+  @Column({ default: false })
+  published: boolean;
+
+  @ApiProperty()
+  @ManyToOne(() => UserEntity, { nullable: true })
+  approvedBy?: UserEntity;
+
+  @ApiProperty()
+  @ManyToOne(() => UserEntity)
+  author: UserEntity;
 
   // @ApiProperty()
   // @PrimaryGeneratedColumn()
@@ -39,8 +52,8 @@ export class Post {
   // @Column({ default: false })
   // isVerified: boolean;
 
-  // @ApiProperty({ isArray: true, type: Role })
-  // @ManyToMany(() => Role, (role) => role.users)
+  // @ApiProperty({ isArray: true, type: RoleEntity })
+  // @ManyToMany(() => RoleEntity, (role) => role.users)
   // @JoinTable({
   //   name: 'user_roles',
   //   joinColumn: {
@@ -53,7 +66,7 @@ export class Post {
   //   },
   // })
   // @Transform(({ value }) =>
-  //   value.map((v: Role) => ({ name: v.name, displayName: v.displayName })),
+  //   value.map((v: RoleEntity) => ({ name: v.name, displayName: v.displayName })),
   // )
-  // roles: Role[];
+  // roles: RoleEntity[];
 }

@@ -7,7 +7,7 @@ import { UsersModule } from 'src/users/users.module';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
-import { RefreshToken } from './refresh-token.entity';
+import { RefreshTokenEntity } from './refresh-token.entity';
 import { AuthController } from './auth.controller';
 
 @Module({
@@ -18,7 +18,7 @@ import { AuthController } from './auth.controller';
       secret: JWT_SECRET,
       signOptions: { expiresIn: JWT_TOKEN_EXPIRY },
     }),
-    TypeOrmModule.forFeature([RefreshToken]),
+    TypeOrmModule.forFeature([RefreshTokenEntity]),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],

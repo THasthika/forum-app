@@ -1,5 +1,5 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
-import { Role } from '../roles/role.entity';
+import { RoleEntity } from '../roles/role.entity';
 import {
   Column,
   Entity,
@@ -10,7 +10,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'users' })
-export class User {
+export class UserEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -35,8 +35,8 @@ export class User {
   @Column({ default: false })
   isVerified: boolean;
 
-  @ApiProperty({ isArray: true, type: Role })
-  @ManyToMany(() => Role, (role) => role.users)
+  @ApiProperty({ isArray: true, type: RoleEntity })
+  @ManyToMany(() => RoleEntity, (role) => role.users)
   @JoinTable({
     name: 'user_roles',
     joinColumn: {
@@ -49,7 +49,10 @@ export class User {
     },
   })
   @Transform(({ value }) =>
-    value.map((v: Role) => ({ name: v.name, displayName: v.displayName })),
+    value.map((v: RoleEntity) => ({
+      name: v.name,
+      displayName: v.displayName,
+    })),
   )
-  roles: Role[];
+  roles: RoleEntity[];
 }

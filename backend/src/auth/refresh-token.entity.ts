@@ -1,13 +1,13 @@
-import { User } from '../users/user.entity';
+import { UserEntity } from '../users/user.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'refresh_tokens' })
-export class RefreshToken {
+export class RefreshTokenEntity {
   @Column()
   userId: string;
 
-  @ManyToOne(() => User, { primary: true })
-  user: User;
+  @ManyToOne(() => UserEntity, { primary: true })
+  user: UserEntity;
 
   @Column({ primary: true })
   token: string;

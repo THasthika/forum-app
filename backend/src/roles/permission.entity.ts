@@ -1,11 +1,11 @@
 import { Column, Entity, ManyToMany } from 'typeorm';
-import { Role } from './role.entity';
+import { RoleEntity } from './role.entity';
 
 @Entity({ name: 'permissions' })
 export class Permission {
   @Column({ primary: true })
   name: string;
 
-  @ManyToMany(() => Role, (role) => role.permissions)
-  roles: Role[];
+  @ManyToMany(() => RoleEntity, (role) => role.permissions)
+  roles: RoleEntity[];
 }

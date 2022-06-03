@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { EntityNotFoundError, Raw, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
-import { RefreshToken } from './refresh-token.entity';
+import { RefreshTokenEntity } from './refresh-token.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { add } from 'date-fns';
 import { REFRESH_TOKEN_EXPIRY } from '../config/common';
@@ -23,8 +23,8 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    @InjectRepository(RefreshToken)
-    private refreshTokenRepository: Repository<RefreshToken>,
+    @InjectRepository(RefreshTokenEntity)
+    private refreshTokenRepository: Repository<RefreshTokenEntity>,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {

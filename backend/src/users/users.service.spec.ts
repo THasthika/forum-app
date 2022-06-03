@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
 import { RolesService } from '../roles/roles.service';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { UsersService } from './users.service';
 
 describe('UsersService', () => {
@@ -28,7 +28,7 @@ describe('UsersService', () => {
       providers: [
         UsersService,
         {
-          provide: getRepositoryToken(User),
+          provide: getRepositoryToken(UserEntity),
           useValue: mockUsersRepository,
         },
         {

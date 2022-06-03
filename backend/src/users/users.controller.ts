@@ -23,7 +23,7 @@ import { PermissionEnum } from '../roles/permission.enum';
 import { RequirePermissions } from '../roles/require-permissions.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -33,7 +33,7 @@ export class UsersController {
   @Get()
   @RequirePermissions(PermissionEnum.USER_READ)
   @ApiPaginatedResponse({
-    model: User,
+    model: UserEntity,
     description: 'Get paginated user data.',
   })
   @PaginateQueryOptions()
@@ -45,7 +45,7 @@ export class UsersController {
   @RequirePermissions(PermissionEnum.USER_READ)
   @ApiResponse({
     status: 200,
-    type: User,
+    type: UserEntity,
     description: 'Get user by id.',
   })
   findUserById(@Param('id', ParseUUIDPipe) id: string) {
@@ -57,7 +57,7 @@ export class UsersController {
   @Post()
   @Public()
   @ApiCreatedResponse({
-    type: User,
+    type: UserEntity,
     description: 'Creates new user object.',
   })
   createUser(@Body() createUserDto: CreateUserDto) {
@@ -66,7 +66,7 @@ export class UsersController {
 
   @Patch(':id')
   @ApiOkResponse({
-    type: User,
+    type: UserEntity,
     description: 'Updates a given user.',
   })
   updateUser(
@@ -78,7 +78,7 @@ export class UsersController {
 
   @Delete(':id')
   @ApiOkResponse({
-    type: User,
+    type: UserEntity,
     description: 'Remove a user.',
   })
   deleteUser(@Param('id', ParseUUIDPipe) id: string) {
@@ -89,7 +89,7 @@ export class UsersController {
   @Post(':id/role/:roleName')
   @RequirePermissions(PermissionEnum.USER_ROLE_UPDATE)
   @ApiOkResponse({
-    type: User,
+    type: UserEntity,
     description: 'Add a role to user.',
   })
   addRole(
@@ -100,7 +100,7 @@ export class UsersController {
   }
 
   @Delete(':id/role/:roleName')
-  @ApiOkResponse({ type: User, description: 'Remove a role from user.' })
+  @ApiOkResponse({ type: UserEntity, description: 'Remove a role from user.' })
   @RequirePermissions(PermissionEnum.USER_ROLE_UPDATE)
   removeRole(
     @Param('id', ParseUUIDPipe) id: string,

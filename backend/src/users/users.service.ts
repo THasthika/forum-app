@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityNotFoundError, FindOneOptions, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 
 import { HASH_SALT_ROUNDS } from '../config/common';
 import * as bcrypt from 'bcrypt';
@@ -27,7 +27,8 @@ export class UsersService implements OnModuleInit {
 
   constructor(
     private rolesService: RolesService,
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async onModuleInit() {
@@ -66,7 +67,7 @@ export class UsersService implements OnModuleInit {
     }
   }
 
-  findAllUsers(query: PaginateQuery): Promise<Paginated<User>> {
+  findAllUsers(query: PaginateQuery): Promise<Paginated<UserEntity>> {
     return paginate(query, this.userRepository, {
       sortableColumns: ['id', 'email', 'username'],
       searchableColumns: ['id', 'email', 'username', 'isBanned', 'isVerified'],
@@ -75,7 +76,7 @@ export class UsersService implements OnModuleInit {
     });
   }
 
-  findUserById(id: string, options: FindOneOptions<User> = {}) {
+  findUserById(id: string, options: FindOneOptions<UserEntity> = {}) {
     try {
       return this.userRepository.findOneOrFail(id, options);
     } catch (err) {
@@ -86,14 +87,14 @@ export class UsersService implements OnModuleInit {
     }
   }
 
-  async findUserByEmail(email: string): Promise<User | undefined> {
+  async findUserByEmail(email: string): Promise<UserEntity | undefined> {
     return await this.userRepository.findOne({
       where: { email },
     });
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const user = new User();
+  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const user = new UserEntity();
     user.email = createUserDto.email;
     user.username = createUserDto.username;
     user.isVerified = true;

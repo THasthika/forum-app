@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { JWT_SECRET, JWT_TOKEN_EXPIRY } from '../config/common';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { RefreshToken } from './refresh-token.entity';
+import { RefreshTokenEntity } from './refresh-token.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -59,7 +59,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: UsersService, useValue: mockUsersService },
         {
-          provide: getRepositoryToken(RefreshToken),
+          provide: getRepositoryToken(RefreshTokenEntity),
           useValue: mockRefreshTokenRepository,
         },
       ],
