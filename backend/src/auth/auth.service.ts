@@ -106,7 +106,7 @@ export class AuthService {
     return result;
   }
 
-  private async createRefreshToken(id: number): Promise<string> {
+  private async createRefreshToken(id: string): Promise<string> {
     const token = this.makeid(64);
     const expiry = add(new Date(), { seconds: REFRESH_TOKEN_EXPIRY });
     const refreshToken = this.refreshTokenRepository.create({

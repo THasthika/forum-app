@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -47,7 +48,7 @@ export class UsersController {
     type: User,
     description: 'Get user by id.',
   })
-  findUserById(@Param('id') id: number) {
+  findUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findUserById(id, {
       relations: ['roles'],
     });
@@ -68,7 +69,10 @@ export class UsersController {
     type: User,
     description: 'Updates a given user.',
   })
-  updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  updateUser(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.usersService.updateUser(id, updateUserDto);
   }
 
@@ -77,7 +81,7 @@ export class UsersController {
     type: User,
     description: 'Remove a user.',
   })
-  deleteUser(@Param('id') id: number) {
+  deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
   }
 
@@ -88,14 +92,20 @@ export class UsersController {
     type: User,
     description: 'Add a role to user.',
   })
-  addRole(@Param('id') id: number, @Param('roleName') roleName: string) {
+  addRole(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('roleName') roleName: string,
+  ) {
     return this.usersService.addRole(id, roleName);
   }
 
   @Delete(':id/role/:roleName')
   @ApiOkResponse({ type: User, description: 'Remove a role from user.' })
   @RequirePermissions(PermissionEnum.USER_ROLE_UPDATE)
-  removeRole(@Param('id') id: number, @Param('roleName') roleName: string) {
+  removeRole(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('roleName') roleName: string,
+  ) {
     return this.usersService.removeRole(id, roleName);
   }
 }

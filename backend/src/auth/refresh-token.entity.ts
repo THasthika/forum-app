@@ -4,7 +4,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 @Entity({ name: 'refresh_tokens' })
 export class RefreshToken {
   @Column()
-  userId: number;
+  userId: string;
 
   @ManyToOne(() => User, { primary: true })
   user: User;

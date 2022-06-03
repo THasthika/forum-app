@@ -75,7 +75,7 @@ export class UsersService implements OnModuleInit {
     });
   }
 
-  findUserById(id: number, options: FindOneOptions<User> = {}) {
+  findUserById(id: string, options: FindOneOptions<User> = {}) {
     try {
       return this.userRepository.findOneOrFail(id, options);
     } catch (err) {
@@ -127,7 +127,7 @@ export class UsersService implements OnModuleInit {
     }
   }
 
-  async updateUser(id: number, updateUserDto: UpdateUserDto) {
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
     try {
       const user = await this.userRepository.findOneOrFail(id);
       if (!!updateUserDto.email) {
@@ -145,7 +145,7 @@ export class UsersService implements OnModuleInit {
     }
   }
 
-  async deleteUser(id: number) {
+  async deleteUser(id: string) {
     try {
       const user = await this.userRepository.findOneOrFail(id);
       return await this.userRepository.remove(user);
@@ -157,7 +157,7 @@ export class UsersService implements OnModuleInit {
     }
   }
 
-  async addRole(id: number, roleName: string) {
+  async addRole(id: string, roleName: string) {
     const role = await this.rolesService.findRoleByName(roleName);
     if (!role) {
       throw new RoleNotFoundException();
@@ -180,7 +180,7 @@ export class UsersService implements OnModuleInit {
     return user;
   }
 
-  async removeRole(id: number, roleName: string) {
+  async removeRole(id: string, roleName: string) {
     const role = await this.rolesService.findRoleByName(roleName);
     if (!role) {
       throw new RoleNotFoundException();
