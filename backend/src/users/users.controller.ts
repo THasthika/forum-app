@@ -17,10 +17,10 @@ import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import {
   ApiPaginatedResponse,
   PaginateQueryOptions,
-} from 'src/paginated-query.decorators';
-import { Public } from 'src/public.decorator';
-import { PermissionEnum } from 'src/roles/permission.enum';
-import { RequirePermissions } from 'src/roles/require-permissions.decorator';
+} from '../paginated-query.decorators';
+import { Public } from '../public.decorator';
+import { PermissionEnum } from '../roles/permission.enum';
+import { RequirePermissions } from '../roles/require-permissions.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';

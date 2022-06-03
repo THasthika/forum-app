@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { randomUUID } from 'crypto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -8,7 +9,7 @@ describe('UsersController', () => {
   const mockUsersService = {
     createUser: jest.fn((dto) => {
       return {
-        id: 1,
+        id: randomUUID(),
         ...dto,
       };
     }),
@@ -18,7 +19,9 @@ describe('UsersController', () => {
         ...dto,
       };
     }),
-    findAllUsers: jest.fn(() => []),
+    findAllUsers: jest.fn(() => ({
+      data: [],
+    })),
     findUserById: jest.fn((id) => ({
       id,
       email: 'test@test.com',
@@ -54,7 +57,7 @@ describe('UsersController', () => {
       password: 'admin1234',
     };
     expect(controller.createUser(dto)).toEqual({
-      id: expect.any(Number),
+      id: expect.any(String),
       ...dto,
     });
   });
@@ -64,21 +67,25 @@ describe('UsersController', () => {
       email: 'admin12@test.com',
       username: 'admin123',
     };
-    expect(controller.updateUser(1, dto)).toEqual({
-      id: 1,
+    const uuid = randomUUID();
+    expect(controller.updateUser(uuid, dto)).toEqual({
+      id: uuid,
       ...dto,
     });
   });
 
-  it('should find all users', () => {
-    expect(controller.findAllUsers()).toEqual([]);
+  it('should find all users', async () => {
+    const resp = await controller.findAllUsers({ path: '' });
+    expect(resp).toHaveProperty('data', []);
   });
 
   it('should get user by id', () => {
-    expect(controller.findUserById(1)).toHaveProperty('id', 1);
+    const uuid = randomUUID();
+    expect(controller.findUserById(uuid)).toHaveProperty('id', uuid);
   });
 
   it('should delete user by id', () => {
-    expect(controller.deleteUser(1)).toHaveProperty('id', 1);
+    const uuid = randomUUID();
+    expect(controller.deleteUser(uuid)).toHaveProperty('id', uuid);
   });
 });
