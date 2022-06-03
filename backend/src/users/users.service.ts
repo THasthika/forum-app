@@ -19,6 +19,7 @@ import { EmailAlreadyExistsException } from './exceptions/email-already-exists.e
 import { UsernameAlreadyExistsException } from './exceptions/username-already-exists.exception';
 import { RolesService } from '../roles/roles.service';
 import { RoleNotFoundException } from './exceptions/role-not-found.exception';
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @Injectable()
 export class UsersService implements OnModuleInit {
@@ -28,11 +29,6 @@ export class UsersService implements OnModuleInit {
     private rolesService: RolesService,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-
-  private async hashPassword(password: string) {
-    const salt = await bcrypt.genSalt(HASH_SALT_ROUNDS);
-    return await bcrypt.hash(password, salt);
-  }
 
   async onModuleInit() {
     setTimeout(async () => {
@@ -70,8 +66,13 @@ export class UsersService implements OnModuleInit {
     }
   }
 
-  findAllUsers(): Promise<User[]> {
-    return this.userRepository.find();
+  findAllUsers(query: PaginateQuery): Promise<Paginated<User>> {
+    return paginate(query, this.userRepository, {
+      sortableColumns: ['id', 'email', 'username'],
+      searchableColumns: ['id', 'email', 'username', 'isBanned', 'isVerified'],
+      defaultSortBy: [['id', 'DESC']],
+      defaultLimit: 50,
+    });
   }
 
   findUserById(id: number, options: FindOneOptions<User> = {}) {
@@ -201,5 +202,10 @@ export class UsersService implements OnModuleInit {
     user = await this.userRepository.save(user);
 
     return user;
+  }
+
+  private async hashPassword(password: string) {
+    const salt = await bcrypt.genSalt(HASH_SALT_ROUNDS);
+    return await bcrypt.hash(password, salt);
   }
 }

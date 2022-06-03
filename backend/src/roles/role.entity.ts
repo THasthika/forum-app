@@ -1,12 +1,15 @@
 import { User } from '../users/user.entity';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { Permission } from './permission.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'roles' })
 export class Role {
+  @ApiProperty()
   @Column({ primary: true })
   name: string;
 
+  @ApiProperty()
   @Column({ unique: true })
   displayName: string;
 

@@ -7,15 +7,19 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'users' })
 export class User {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column({ unique: true })
   email: string;
 
+  @ApiProperty()
   @Column({ unique: true })
   username: string;
 
@@ -23,12 +27,15 @@ export class User {
   @Exclude()
   password: string;
 
+  @ApiProperty()
   @Column({ default: false })
   isBanned: boolean;
 
+  @ApiProperty()
   @Column({ default: false })
   isVerified: boolean;
 
+  @ApiProperty({ isArray: true, type: Role })
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({
     name: 'user_roles',
