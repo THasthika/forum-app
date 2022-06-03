@@ -2,12 +2,17 @@ import { Exclude, Expose, Transform } from 'class-transformer';
 import { RoleEntity } from '../roles/role.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { PostEntity } from 'src/posts/post.entity';
+import { CommentEntity } from 'src/posts/comment.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -55,4 +60,19 @@ export class UserEntity {
     })),
   )
   roles: RoleEntity[];
+
+  @OneToMany(() => PostEntity, (post) => post.author)
+  authoredPosts: PostEntity[];
+
+  @OneToMany(() => PostEntity, (post) => post.checker)
+  checkedPosts: PostEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.author)
+  authoredComments: CommentEntity[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
