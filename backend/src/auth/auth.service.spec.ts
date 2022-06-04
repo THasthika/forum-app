@@ -1,7 +1,7 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { JWT_SECRET, JWT_TOKEN_EXPIRY } from '../config/common';
+import { JWT_SECRET, JWT_TOKEN_EXPIRY } from '../common/config/common';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { RefreshTokenEntity } from './refresh-token.entity';

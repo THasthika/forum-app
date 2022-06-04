@@ -2,13 +2,11 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
-  Req,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -16,13 +14,16 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import { PermissionDeniedExcpetion } from 'src/exceptions/permission-denied.exception';
+import { PermissionDeniedExcpetion } from 'src/common/exceptions/permission-denied.exception';
+import { isOwnerOrHasPermissions } from 'src/common/helper';
+import { AuthUser } from '../auth/auth-user.decorator';
+import { IAuthUser } from '../auth/interfaces/auth-user.interface';
 import {
   ApiPaginatedResponse,
   PaginateQueryOptions,
-} from '../paginated-query.decorators';
-import { Public } from '../public.decorator';
-import { hasPermission, PermissionEnum } from '../roles/permission.enum';
+} from '../common/paginated-query.decorators';
+import { Public } from '../common/public.decorator';
+import { PermissionEnum } from '../roles/permission.enum';
 import { RequirePermissions } from '../roles/require-permissions.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -72,14 +73,19 @@ export class UsersController {
     type: UserEntity,
     description: 'Updates a given user.',
   })
-  updateUser(
-    @Req() req,
+  async updateUser(
+    @AuthUser() authUser: IAuthUser,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
+    // check permissions
     if (
-      req.user.id !== id &&
-      !hasPermission(req.user.id, PermissionEnum.USER_UPDATE)
+      !(await isOwnerOrHasPermissions(
+        this.usersService.isSelf,
+        id,
+        authUser,
+        PermissionEnum.POST_DELETE,
+      ))
     ) {
       throw new PermissionDeniedExcpetion();
     }

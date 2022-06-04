@@ -7,7 +7,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
-import { Public } from '../public.decorator';
+import { Public } from '../common/public.decorator';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';

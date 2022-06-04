@@ -12,7 +12,7 @@ import { UsersService } from '../users/users.service';
 import { RefreshTokenEntity } from './refresh-token.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { add } from 'date-fns';
-import { REFRESH_TOKEN_EXPIRY } from '../config/common';
+import { REFRESH_TOKEN_EXPIRY } from '../common/config/common';
 import { Cron } from '@nestjs/schedule';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 

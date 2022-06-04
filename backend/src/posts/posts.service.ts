@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/users/user.entity';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostNotFoundException } from './exceptions/post-not-found.exception';
 import { PostEntity } from './post.entity';
-
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 @Injectable()
 export class PostsService {
   constructor(
@@ -50,5 +49,38 @@ export class PostsService {
       }
       throw err;
     }
+  }
+
+  findAllPosts(query: PaginateQuery): Promise<Paginated<PostEntity>> {
+    return paginate(query, this.postRepository, {
+      sortableColumns: [
+        'id',
+        'title',
+        'author',
+        'checker',
+        'createdAt',
+        'updatedAt',
+      ],
+      searchableColumns: ['id', 'title', 'content', 'author', 'checker'],
+      defaultSortBy: [['updatedAt', 'DESC']],
+      defaultLimit: 50,
+    });
+  }
+
+  async deletePost(id: string) {
+    try {
+      const post = await this.findPostById(id);
+      return await this.postRepository.remove(post);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async isOwner(id: string, userId: string) {
+    const post = await this.postRepository.findOne(id, {
+      select: ['authorId'],
+    });
+    if (!post) throw new PostNotFoundException();
+    return post.authorId === userId;
   }
 }

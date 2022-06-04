@@ -10,7 +10,7 @@ import { EntityNotFoundError, FindOneOptions, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './user.entity';
 
-import { HASH_SALT_ROUNDS } from '../config/common';
+import { HASH_SALT_ROUNDS } from '../common/config/common';
 import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from './exceptions/user-already-exists.exception';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -69,9 +69,9 @@ export class UsersService implements OnModuleInit {
 
   findAllUsers(query: PaginateQuery): Promise<Paginated<UserEntity>> {
     return paginate(query, this.userRepository, {
-      sortableColumns: ['id', 'email', 'username'],
+      sortableColumns: ['id', 'email', 'username', 'createdAt', 'updatedAt'],
       searchableColumns: ['id', 'email', 'username', 'isBanned', 'isVerified'],
-      defaultSortBy: [['id', 'DESC']],
+      defaultSortBy: [['updatedAt', 'DESC']],
       defaultLimit: 50,
     });
   }
@@ -203,6 +203,10 @@ export class UsersService implements OnModuleInit {
     user = await this.userRepository.save(user);
 
     return user;
+  }
+
+  async isSelf(id: string, userId: string) {
+    return id === userId;
   }
 
   private async hashPassword(password: string) {
