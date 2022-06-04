@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../users/user.entity';
-import { PostEntity } from './post.entity';
+import { PostEntity } from '../posts/post.entity';
 
 @Entity({ name: 'comments' })
 export class CommentEntity {
@@ -16,17 +16,16 @@ export class CommentEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
+  postId: string;
+
   @ApiProperty()
-  @ManyToOne(() => PostEntity, { primary: true })
+  @ManyToOne(() => PostEntity, (post) => post.comments, { primary: true })
   post: PostEntity;
 
   @ApiProperty()
   @Column({ type: 'text' })
   content: string;
-
-  @ApiProperty()
-  @Column({ default: true })
-  enabled: boolean;
 
   @Column()
   authorId: string;

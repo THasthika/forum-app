@@ -20,9 +20,10 @@ import { UsernameAlreadyExistsException } from './exceptions/username-already-ex
 import { RolesService } from '../roles/roles.service';
 import { RoleNotFoundException } from './exceptions/role-not-found.exception';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { IIsOwnerService } from 'src/common/interfaces/is-owner-service.interface';
 
 @Injectable()
-export class UsersService implements OnModuleInit {
+export class UsersService implements OnModuleInit, IIsOwnerService {
   private logger = new Logger(UsersService.name);
 
   constructor(
@@ -205,7 +206,7 @@ export class UsersService implements OnModuleInit {
     return user;
   }
 
-  async isSelf(id: string, userId: string) {
+  async isOwner(id: string, userId: string) {
     return id === userId;
   }
 

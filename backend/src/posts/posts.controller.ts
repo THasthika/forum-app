@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseEnumPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -17,7 +18,9 @@ import { PaginateQueryOptions } from 'src/common/paginated-query.decorators';
 import { PermissionEnum } from 'src/roles/permission.enum';
 import { RequirePermissions } from 'src/roles/require-permissions.decorator';
 import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostStatusDto } from './dto/update-post-status.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostStatus } from './post.entity';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -27,6 +30,9 @@ export class PostsController {
   @Post()
   @RequirePermissions(PermissionEnum.POST_CREATE)
   createPost(@AuthUser() authUser: IAuthUser, @Body() dto: CreatePostDto) {
+    if (authUser.isBanned) {
+      throw new PermissionDeniedExcpetion();
+    }
     dto.authorId = authUser.id;
     return this.postsService.createPost(dto);
   }
@@ -50,10 +56,13 @@ export class PostsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePostDto,
   ) {
+    if (authUser.isBanned) {
+      throw new PermissionDeniedExcpetion();
+    }
     // check permissions
     if (
       !(await isOwnerOrHasPermissions(
-        this.postsService.isOwner,
+        this.postsService,
         id,
         authUser,
         PermissionEnum.POST_UPDATE,
@@ -64,15 +73,45 @@ export class PostsController {
     return this.postsService.updatePost(id, dto);
   }
 
+  @Patch(':id/approve')
+  @RequirePermissions(PermissionEnum.POST_STATUS_UPDATE)
+  async approvePost(
+    @AuthUser() authUser: IAuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const dto = new UpdatePostStatusDto();
+    dto.id = id;
+    dto.status = PostStatus.APPROVED;
+    dto.checkerId = authUser.id;
+    return await this.postsService.updatePostStatus(dto);
+  }
+
+  @Patch(':id/reject')
+  @RequirePermissions(PermissionEnum.POST_STATUS_UPDATE)
+  async rejectPost(
+    @AuthUser() authUser: IAuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const dto = new UpdatePostStatusDto();
+    dto.id = id;
+    dto.status = PostStatus.REJECTED;
+    dto.checkerId = authUser.id;
+    return await this.postsService.updatePostStatus(dto);
+  }
+
   @Delete(':id')
   async deletePostById(
     @AuthUser() authUser: IAuthUser,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
+    // check banned
+    if (authUser.isBanned) {
+      throw new PermissionDeniedExcpetion();
+    }
     // check permissions
     if (
       !(await isOwnerOrHasPermissions(
-        this.postsService.isOwner,
+        this.postsService,
         id,
         authUser,
         PermissionEnum.POST_DELETE,

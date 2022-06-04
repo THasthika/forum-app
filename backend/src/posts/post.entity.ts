@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../users/user.entity';
+import { CommentEntity } from '../comments/comment.entity';
 
 export enum PostStatus {
   PENDING = 'pending',
@@ -33,6 +35,9 @@ export class PostEntity {
   @ApiProperty()
   @Column({ type: 'enum', enum: PostStatus, default: PostStatus.PENDING })
   status: PostStatus;
+
+  @OneToMany(() => CommentEntity, (comment) => comment.post)
+  comments: CommentEntity[];
 
   @Column({ nullable: true })
   checkerId: string;

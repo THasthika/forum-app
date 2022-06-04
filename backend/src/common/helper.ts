@@ -1,5 +1,6 @@
 import { IAuthUser } from 'src/auth/interfaces/auth-user.interface';
 import { hasPermission, PermissionEnum } from 'src/roles/permission.enum';
+import { IIsOwnerService } from './interfaces/is-owner-service.interface';
 
 // export function createOwnershipOrPermissionCheckFunction(
 //   checkOwnerFn: (id: string, userId: string) => Promise<boolean>,
@@ -18,13 +19,13 @@ import { hasPermission, PermissionEnum } from 'src/roles/permission.enum';
 // }
 
 export async function isOwnerOrHasPermissions(
-  checkOwnerFn: (id: string, userId: string) => Promise<boolean>,
+  service: IIsOwnerService,
   id: string,
   authUser: IAuthUser,
   ...permissions: PermissionEnum[]
 ) {
   if (
-    !(await checkOwnerFn(id, authUser.id)) &&
+    !(await service.isOwner(id, authUser.id)) &&
     !hasPermission(authUser.permissions, ...permissions)
   ) {
     return false;

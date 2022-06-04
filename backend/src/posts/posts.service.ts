@@ -6,8 +6,10 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostNotFoundException } from './exceptions/post-not-found.exception';
 import { PostEntity } from './post.entity';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { UpdatePostStatusDto } from './dto/update-post-status.dto';
+import { IIsOwnerService } from 'src/common/interfaces/is-owner-service.interface';
 @Injectable()
-export class PostsService {
+export class PostsService implements IIsOwnerService {
   constructor(
     @InjectRepository(PostEntity)
     private postRepository: Repository<PostEntity>,
@@ -71,6 +73,20 @@ export class PostsService {
     try {
       const post = await this.findPostById(id);
       return await this.postRepository.remove(post);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updatePostStatus(dto: UpdatePostStatusDto) {
+    try {
+      const post = await this.findPostById(dto.id);
+      if (post.status === dto.status) {
+        return post;
+      }
+      post.status = dto.status;
+      post.checkerId = dto.checkerId;
+      return await this.postRepository.save(post);
     } catch (err) {
       throw err;
     }

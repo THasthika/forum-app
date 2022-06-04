@@ -81,7 +81,7 @@ export class UsersController {
     // check permissions
     if (
       !(await isOwnerOrHasPermissions(
-        this.usersService.isSelf,
+        this.usersService,
         id,
         authUser,
         PermissionEnum.POST_DELETE,
