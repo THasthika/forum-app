@@ -9,7 +9,7 @@ import {
 } from '@nestjs/swagger';
 
 class PaginatedMetaResponse {
-  @ApiProperty() itermsPerPage: number;
+  @ApiProperty() itemsPerPage: number;
   @ApiProperty() totalItems: number;
   @ApiProperty() currentPage: number;
   @ApiProperty() sortBy: string;

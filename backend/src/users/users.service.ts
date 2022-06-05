@@ -117,7 +117,10 @@ export class UsersService implements OnModuleInit, IIsOwnerService {
         throw new UsernameAlreadyExistsException();
       }
 
-      return await this.userRepository.save(user);
+      const cuser = await this.userRepository.save(user);
+      await this.addRole(cuser.id, 'USER');
+
+      return cuser;
     } catch (err) {
       if (err instanceof HttpException) {
         throw err;

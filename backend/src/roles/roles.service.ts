@@ -89,6 +89,10 @@ export class RolesService implements OnModuleInit {
     this.roleRepository.save(role);
   }
 
+  async findAllRoles() {
+    return this.roleRepository.find();
+  }
+
   async findRoleByName(name: string) {
     return this.roleRepository.findOne({ name });
   }

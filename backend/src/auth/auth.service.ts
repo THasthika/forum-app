@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   Injectable,
   Logger,
@@ -75,7 +76,7 @@ export class AuthService {
         throw err;
       }
       if (err instanceof EntityNotFoundError) {
-        throw new UnauthorizedException();
+        throw new BadRequestException();
       }
       throw err;
     }
