@@ -1,11 +1,8 @@
 export function getUser() {
   try {
-    if (localStorage.getItem('user')) {
-      return JSON.parse(localStorage.getItem('user'));
-    }
+    return JSON.parse(localStorage.getItem('user'));
   } catch (err) {
-    console.error(err);
-  } finally {
+    console.log(err);
     return null;
   }
 }

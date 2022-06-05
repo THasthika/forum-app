@@ -1,3 +1,4 @@
+import RolesApi from './roles';
 import UsersApi from './users';
 
 const { default: axios } = require('axios');
@@ -14,8 +15,12 @@ function createApiInstance() {
 const _api = createApiInstance();
 
 const api = {
+  call: async (link) => {
+    return await _api.get(link);
+  },
   auth: AuthApi(_api),
   users: UsersApi(_api),
+  roles: RolesApi(_api),
 };
 
 _api.interceptors.request.use(
@@ -51,10 +56,13 @@ _api.interceptors.response.use(
           _api.defaults.headers.common[
             'Authorization'
           ] = `Bearer ${refreshToken}`;
-
+          originalConfig._retry = true;
           return _api(originalConfig);
         }
       } catch (_error) {
+        if (_error.statusCode === 400) {
+          setUser(null);
+        }
         if (_error.response && _error.response.data) {
           throw _error.response.data;
         }

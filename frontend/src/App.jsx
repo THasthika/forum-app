@@ -10,6 +10,7 @@ import { TitleProvider } from 'context/title';
 import Layout from 'Layout';
 import RegisterPage from 'pages/RegisterPage';
 import LoginPage from 'pages/LoginPage';
+import UsersListPage from 'pages/users/UsersListPage';
 
 function RoutesHolder() {
   const { user } = useUser();
@@ -18,7 +19,7 @@ function RoutesHolder() {
     <Routes>
       <Route path="/" element={<HomePage />}></Route>
       {!!user ? (
-        <></>
+        <Route path="/users" element={<UsersListPage />}></Route>
       ) : (
         <>
           <Route path="/register" element={<RegisterPage />}></Route>

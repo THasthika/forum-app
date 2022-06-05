@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
 import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
 import AppBar from '@mui/material/AppBar';
@@ -24,7 +24,7 @@ const Header = () => {
 
   const { theme, dispatch: themeDispatch } = useTheme();
 
-  function handleLogout() {
+  const handleLogout = useCallback(() => {
     // clear cart and user
     userActions.logoutUser(userDispatch);
 
@@ -33,7 +33,17 @@ const Header = () => {
     });
 
     navigate('/');
-  }
+  }, [enqueueSnackbar, navigate, userDispatch]);
+
+  const loggedLinkList = useMemo(
+    () => [
+      { title: 'Posts', to: '/posts' },
+      { title: 'Users', to: '/users' },
+      { title: 'Profile', to: '/profile' },
+      { title: 'Logout', onClick: handleLogout },
+    ],
+    [handleLogout],
+  );
 
   return (
     <AppBar position="fixed">
@@ -46,14 +56,23 @@ const Header = () => {
             Home
           </Button>
           {!!user ? (
-            <>
-              <Button component={Link} to="/profile" color="inherit">
-                {user.username}
-              </Button>
-              <Button onClick={handleLogout} color="inherit">
-                Logout
-              </Button>
-            </>
+            loggedLinkList.map((l, i) => {
+              if (l.to) {
+                return (
+                  <Button key={i} component={Link} to={l.to} color="inherit">
+                    {l.title}
+                  </Button>
+                );
+              } else if (l.onClick) {
+                return (
+                  <Button key={i} onClick={l.onClick} color="inherit">
+                    {l.title}
+                  </Button>
+                );
+              } else {
+                return <React.Fragment key={i}></React.Fragment>;
+              }
+            })
           ) : (
             <>
               <Button component={Link} to="/register" color="inherit">

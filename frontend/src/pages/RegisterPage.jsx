@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import FormTextField from 'components/forms/FormTextField';
 import api from 'api';
 import { useSnackbar } from 'notistack';
+import { useEffectOnce } from 'utils/useEffectOnce';
 
 const registerFormSchema = yup
   .object({
@@ -53,6 +54,7 @@ const RegisterPage = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues,
@@ -73,6 +75,7 @@ const RegisterPage = () => {
       try {
         await api.users.createUser(email, username, password);
         enqueueSnackbar('User successfully created', { variant: 'success' });
+        reset();
       } catch (err) {
         enqueueSnackbar(err.message, { variant: 'error' });
       } finally {

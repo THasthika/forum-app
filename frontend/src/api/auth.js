@@ -36,8 +36,15 @@ export default function AuthApi(axios) {
     );
   };
 
+  const getPermissions = (accessToken) => {
+    return axios.get('/auth/permissions', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  };
+
   return {
     login,
     refreshToken,
+    getPermissions,
   };
 }

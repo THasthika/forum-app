@@ -3,7 +3,7 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Avatar, Typography, Grid, Link } from '@mui/material';
 import { titleActions, useTitle } from 'context/title';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -12,6 +12,7 @@ import api from 'api';
 import { useSnackbar } from 'notistack';
 import { useUser } from 'context/user';
 import { setUserData } from 'context/user/actions';
+import { useEffectOnce } from 'utils/useEffectOnce';
 
 const loginFormSchema = yup
   .object({
@@ -31,6 +32,8 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const navigate = useNavigate();
 
   const defaultValues = {
     email: '',
@@ -60,15 +63,17 @@ const LoginPage = () => {
       try {
         const res = await api.auth.login(email, password);
         const data = res.data;
-        setUserData(userDispatch, data);
+        const permissions = await api.auth.getPermissions(data.accessToken);
+        setUserData(userDispatch, { ...data, permissions });
         enqueueSnackbar('Login successful', { variant: 'success' });
+        navigate('/');
       } catch (err) {
         enqueueSnackbar(err.message, { variant: 'error' });
       } finally {
         setIsLoading(false);
       }
     },
-    [enqueueSnackbar, userDispatch],
+    [enqueueSnackbar, navigate, userDispatch],
   );
 
   return (

@@ -4,16 +4,12 @@ import { userReducer } from './reducer';
 
 const { createContext } = require('react');
 
-const initialState = null;
-
-const initializer = getUser() || initialState;
-
 const UserContext = createContext(null);
 
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-  const [user, dispatch] = useReducer(userReducer, initializer);
+  const [user, dispatch] = useReducer(userReducer, getUser());
 
   useEffect(() => {
     setUser(user);
