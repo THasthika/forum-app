@@ -11,6 +11,10 @@ import Layout from 'Layout';
 import RegisterPage from 'pages/RegisterPage';
 import LoginPage from 'pages/LoginPage';
 import UsersListPage from 'pages/users/UsersListPage';
+import PostsListPage from 'pages/posts/PostsListPage';
+import PostPage from 'pages/posts/PostPage';
+import ProfilePage from 'pages/ProfilePage';
+import UserPage from 'pages/users/UserPage';
 
 function RoutesHolder() {
   const { user } = useUser();
@@ -19,7 +23,13 @@ function RoutesHolder() {
     <Routes>
       <Route path="/" element={<HomePage />}></Route>
       {!!user ? (
-        <Route path="/users" element={<UsersListPage />}></Route>
+        <>
+          <Route path="/users" element={<UsersListPage />}></Route>
+          <Route path="/users/:id" element={<UserPage />}></Route>
+          <Route path="/posts" element={<PostsListPage />}></Route>
+          <Route path="/posts/:id" element={<PostPage />}></Route>
+          <Route path="/profile" element={<ProfilePage />}></Route>
+        </>
       ) : (
         <>
           <Route path="/register" element={<RegisterPage />}></Route>

@@ -1,3 +1,4 @@
+import PostsApi from './posts';
 import RolesApi from './roles';
 import UsersApi from './users';
 
@@ -21,6 +22,7 @@ const api = {
   auth: AuthApi(_api),
   users: UsersApi(_api),
   roles: RolesApi(_api),
+  posts: PostsApi(_api),
 };
 
 _api.interceptors.request.use(
