@@ -21,4 +21,5 @@ EXPOSE 8000
 # add app
 COPY . ./
 
-ENTRYPOINT [ "/bin/bash", "./entrypoint.sh" ]
+CMD npm run build
+CMD npm run start:prod

@@ -16,9 +16,13 @@ services:
       - 8001:3000
     depends_on:
       - db
-    volumes:
-      - ./backend/:/app
-      - /app/node_modules/
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=forum
+      - DB_USER=forumuser
+      - DB_PASS=forumpwd
     command: npm run start:dev
   frontend:
     build:
@@ -26,6 +30,9 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - 8000:3000
+    environment:
+      - REACT_APP_API_BASE=http://backend:3000
+      - PORT=3000
     depends_on:
       - backend
 volumes:
